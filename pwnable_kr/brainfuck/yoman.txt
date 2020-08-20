@@ -1,0 +1,65 @@
+As said, we have read and write primitives.
+there are two approaches- to override the return address, stored on the stack, or to override a PLT entry. the second approach will be problematic, because the only function we can alter is strlen, which is executed during the bytes write.
+so the idea is simple- to override the return address. 
+this method is not possible, because we cant insert billions of characters to reach the stack. on the other hand, we can override libc functions. 
+but with which value?
+
+bf_libc.so contains a system() function at a known address. we shall call this function, while the stack contains the null-terminated string '/bin/sh' right above it.
+
+we will note that this program uses a special calling convention, in which it passes arguments right through [esp]. moreover, the start of the main() function stores EBX on the stack. at the end of the function, we can see that ebx is stored once again, and then the program leaves.
+main() stack:
+
+0xffff
+<RA>
+<EBP>
+<EBX>
+0x0000
+
+using dynamic debug, i found that ebx contains the value of 0, so it seems not very interesting. ebp also contains the value of 0. 
+important addresses (found also thanks to objdump -d):
+
+P (tape's address) = 0x0804a0a0
+main = 0x08048671
+fgets@got = 0x0804a010
+memset@got = 0x0804a02c
+putchar@got = 0x0804a030
+getchar@got = 0x0804a00c
+__stack_chk_fail@got = 0x0804a014
+
+
+libc offsets:
+system@bf_libc = 0x3ada0
+fgets@bf_libc = 0x5e150
+memset@bf_libc = 0x76fc0
+putchar@bf_libc = 0x61920
+getchar@bf_libc = 0x65b40
+_IO_puts@bf_libc = 0x5fca0
+__stack_chk_fail@bf_libc = 0xf7680
+
+if we redirect code execution to start again from main (by overwritting the GOT entry of putchar), and memset's GOT overwritten to fgets, and fget's to system, we can execute system ('/bin/sh')!
+We now want to leak the address of libc. we know that the ',.' commands uses putchar() and getchar(), so we can use offsets to calculate libc's base address.
+
+for example, _IO_puts GOT entry contains the address 0xf7d94140. and fgets GOT entry loaded at 0xf7d92720. 
+offset: 6688
+However, the offsets in the bf_libc library are 6992 bytes.
+i spend some time on this issue, but i figured (using ldd) thats the program uses the dynamic .so files located on my local machine. my libc version contains different addressses:
+
+fgets@my_libc = 0x6a720
+_IO_puts@my_libc = 0x6c140
+__stack_chk_fail@my_libc = 0x10b790
+
+the offset is indeed 6688 bytes!
+
+As a test, we will overwrite the GOT entry of putchar() with main's address, so the program will restart!
+The relevant steps:
+
+- decrease P by (0x0804a0a0 - 0x0804a030) bytes.
+- write \x71 to P
+- increase P by 1, write \x86 to P
+- increase P by 1, write \x04 to P
+- increase P by 1, write \x08 to P
+
+we can see that it indeed overwrites the GOT entry to main's!
+so the program restarts, as we wish.
+
+our next step will be to change the GOT entry of memset to fgets. that way we can write /bin/sh easly on the stack. 
