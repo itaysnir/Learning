@@ -1,0 +1,9 @@
+The idea is simple, fork and use syscall ptrace from the vdso, to allow TRACEME of a debugger.
+
+Ptrace:
+eax = 26 (syscall ptrace), controlled via argc
+ebx = request (long), TRACEME is 0 (which is ebx default value)
+ecx = pid (long)
+edx = address (ulong), we send 
+esi = data (ulong)
+
