@@ -1,15 +1,12 @@
 #include <stdio.h>
 #include <fcntl.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <sys/user.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <sys/ptrace.h>
 
+char my_buffer[1024];
 void main()
 {
-	ptrace(PTRACE_TRACEME, 0, 0, 0);
-
+	int fd = open("/home/meow/Documents/pwnable_kr/Learning/pwnable_kr/tiny_hard/source", O_RDONLY);
+	ssize_t bytes_read = read(fd, my_buffer, 50);
+	printf("Just read %d bytes, message:%s\n",bytes_read, my_buffer);
 }

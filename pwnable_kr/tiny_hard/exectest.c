@@ -13,6 +13,11 @@ char *ARG = "/bin/sh";
 char exploit[] = "cat /home/meow/Documents/pwnable_kr/Learning/pwnable_kr/tiny_hard/source > /home/meow/Documents/pwnable_kr/Learning/pwnable_kr/tiny_hard/DESTTT\n";
 char *child_trace = "/home/meow/Documents/pwnable_kr/Learning/pwnable_kr/tiny_hard/child_ptrace";
 
+char *bin_sh_addr = "/bin/sh";
+char *arg_1 = "-c";
+char *arg_2 = "/bin/ls -la > NEW_FLAG";
+char *argv_args[] = { "/bin/sh", "-c", "/bin/ls -la > NEW_FLAG", NULL};
+
 int main()
 {
 	struct user_regs_struct regs = { 0 };
@@ -32,8 +37,10 @@ int main()
     	close(pipefd[1]);
         dup2(pipefd[0], 0);
     	//printf("[*] Child entered\n");
-        execl(child_trace, child_trace, NULL);
-        perror("execl");
+        // execl(child_trace, child_trace, NULL);
+
+        execvpe(argv_args[0], argv_args, NULL);
+        perror("execvpe");
     }
     else {
 	//printf("[*] Parent entered. Child pid: %d\n", pid);
@@ -41,8 +48,8 @@ int main()
         write(pipefd[1], exploit, sizeof(exploit));
         wait(&status);
         printf("Child started, status: %d\n", status);
-        ptrace(PTRACE_GETREGS, pid, 0, &regs);
-        printf("Registers values:\nEAX:%08x\nORIG_EAX:%08x\nEBX:%08x\nECX:%08x\nEDX:%08x\nESP:%08x\nEBP:%08x\nEIP:%08x\n\n\n\n\n\n", regs.eax, regs.orig_eax, regs.ebx, regs.ecx, regs.edx, regs.esp, regs.ebp, regs.eip);
+        //ptrace(PTRACE_GETREGS, pid, 0, &regs);
+        //printf("Registers values:\nEAX:%08x\nORIG_EAX:%08x\nEBX:%08x\nECX:%08x\nEDX:%08x\nESP:%08x\nEBP:%08x\nEIP:%08x\n\n\n\n\n\n", regs.eax, regs.orig_eax, regs.ebx, regs.ecx, regs.edx, regs.esp, regs.ebp, regs.eip);
 
     }
 	return 0;
