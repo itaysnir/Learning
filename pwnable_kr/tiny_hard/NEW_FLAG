@@ -1,14 +1,14 @@
-total 572
-drwxrwxr-x  2 meow meow   4096 Feb 13 18:13 .
+total 576
+drwxrwxr-x  2 meow meow   4096 Feb 13 21:32 .
 drwxrwxr-x 38 meow meow   4096 Jan 14 19:29 ..
 -rw-rw-r--  1 meow meow      2 Feb 13 17:36 DESTTT
--rw-rw-r--  1 meow meow      0 Feb 13 18:13 NEW_FLAG
--rwxrwxr-x  1 meow meow  15648 Feb 13 18:13 child_ptrace
+-rw-rw-r--  1 meow meow      0 Feb 13 21:32 NEW_FLAG
+-rwxrwxr-x  1 meow meow  15648 Feb 13 21:32 child_ptrace
 -rw-rw-r--  1 meow meow    333 Feb 13 14:06 child_ptrace.c
 -rwxrwxr-x  1 meow meow     71 Feb 13 10:36 compile_tests.sh
 -rwxrwxr-x  1 meow meow     62 Feb 11 23:33 connect.sh
--rwxrwxr-x  1 meow meow  16280 Feb 13 18:13 exectest
--rw-rw-r--  1 meow meow   1644 Feb 13 18:13 exectest.c
+-rwxrwxr-x  1 meow meow  16280 Feb 13 21:32 exectest
+-rw-rw-r--  1 meow meow   1738 Feb 13 21:32 exectest.c
 -rwxrwxr-x  1 meow meow  17088 Jan 14 23:55 exploit
 -rw-rw-r--  1 meow meow   1757 Feb 10 23:35 exploit.c
 -rw-rw-r--  1 meow meow 148720 Jan 14 23:27 exploit.i64
@@ -17,7 +17,7 @@ drwxrwxr-x 38 meow meow   4096 Jan 14 19:29 ..
 -rw-rw-r--  1 meow meow  47103 Jan 14 20:57 local_gadgets.txt
 -rw-rw-r--  1 meow meow   4096 Jan 14 20:57 local_vdso.bin
 -rwxrwxr-x  1 meow meow  16292 Feb 13 10:49 new_exploit
--rw-rw-r--  1 meow meow   6039 Feb 13 17:06 new_exploit.c
+-rw-rw-r--  1 meow meow   9359 Feb 13 20:46 new_exploit.c
 -rw-rw-r--  1 meow meow  30936 Jan 14 19:56 remote_gadgets.txt
 -rw-rw-r--  1 meow meow      2 Feb 13 10:36 source
 -rwxrwxr-x  1 meow meow  16704 Jan 14 21:56 test_bin

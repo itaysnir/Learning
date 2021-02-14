@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/ptrace.h>
+#include <sys/syscall.h>
 
 
 char *ARG = "/bin/sh";
@@ -38,8 +39,8 @@ int main()
         dup2(pipefd[0], 0);
     	//printf("[*] Child entered\n");
         // execl(child_trace, child_trace, NULL);
-
-        execvpe(argv_args[0], argv_args, NULL);
+        long ret_val = syscall(11, bin_sh_addr, argv_args, NULL);
+        // execvpe(bin_sh_addr, bin_sh_addr, NULL);
         perror("execvpe");
     }
     else {
